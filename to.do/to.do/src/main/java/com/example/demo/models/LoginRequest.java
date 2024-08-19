@@ -1,2 +1,4 @@
-package com.example.demo.models;public record LoginRequest() {
+package com.example.demo.models;
+
+public record LoginRequest(String username, String password) {
 }

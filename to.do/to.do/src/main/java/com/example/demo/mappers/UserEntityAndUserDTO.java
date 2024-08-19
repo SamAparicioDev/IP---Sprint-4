@@ -29,6 +29,7 @@ public class UserEntityAndUserDTO {
         userDTO.setPassword(userEntity.getPassword());
         userDTO.setUsername(userEntity.getUsername());
         userDTO.setTask(taskEntityAndTaskDTO.taskEntityToTaskDTOSet(userEntity.getTask()));
+        userDTO.setRoles(userEntity.getRole());
         return userDTO;
     }
     public UserEntity userDTOToUserEntity(UserDTO userDTO) {
@@ -38,6 +39,7 @@ public class UserEntityAndUserDTO {
         userEntity.setPassword(userDTO.getPassword());
         userEntity.setUsername(userDTO.getUsername());
         userEntity.setTask(taskEntityAndTaskDTO.taskDTOToTaskEntitySet(userDTO.getTask()));
+        userEntity.setRole(userDTO.getRoles());
         return userEntity;
     }
 }

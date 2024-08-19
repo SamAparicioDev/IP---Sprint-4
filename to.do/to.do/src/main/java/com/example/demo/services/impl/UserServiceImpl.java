@@ -9,6 +9,10 @@ import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
 import com.example.demo.services.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,10 +41,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(Long id,UserDTO userDTO) {
-        if(userRepository.existsById(id)){
-            userRepository.save(userEntityAndUserDTO.userDTOToUserEntity(userDTO));
-            return userDTO;
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+            UserEntity user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("UserNotFound"));
+
+        if(user != null){
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword());
+            user.setUsername(userDTO.getUsername());
+            user.setRole(userDTO.getRoles());
+            userRepository.save(user);
+            return userEntityAndUserDTO.userEntityToUserDTO(user);
         }
         else{
             return null;

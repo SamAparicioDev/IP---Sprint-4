@@ -12,9 +12,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true)
     private String username;
     private String password;
     private String email;
+    private Roles role = Roles.USER;
     @JsonIgnore
     @OneToMany(mappedBy = "user_id" , fetch = FetchType.LAZY)
     private Set<TaskEntity> task = new HashSet<>();
@@ -68,6 +70,14 @@ public class UserEntity {
 
     public void setTask(Set<TaskEntity> task) {
         this.task = task;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
     }
 
     @Override
