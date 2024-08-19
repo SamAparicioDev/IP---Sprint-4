@@ -83,6 +83,9 @@ public class TaskDTO {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", user_id=" + user_id+
+                ", user_password=" + user_id.getUsername()+
+                ", user_email=" + user_id.getEmail()+
+                ", user_username" + user_id.getUsername()+
                 '}';
     }
 }
