@@ -38,6 +38,12 @@ public class UserDTO {
         this.password = password;
         this.email = email;
     }
+    public UserDTO(Long id,String username, String password, String email) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
     public UserDTO(String username, String password, String email,Roles roles) {
         this.username = username;
         this.password = password;
