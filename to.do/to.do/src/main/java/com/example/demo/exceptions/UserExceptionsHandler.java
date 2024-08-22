@@ -1,9 +1,7 @@
 package com.example.demo.exceptions;
 
-import com.example.demo.services.exceptions.UserExceptions.IncompleteUserException;
-import com.example.demo.services.exceptions.UserExceptions.UserNotFoundException;
+import com.example.demo.services.exceptions.UserExceptions.*;
 
-import com.example.demo.services.exceptions.UserExceptions.UserRoleIsEmpty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,4 +22,13 @@ public class UserExceptionsHandler extends RuntimeException {
     public ResponseEntity<String> handleUserRoleIsEmptyException(UserRoleIsEmpty e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+    @ExceptionHandler(UserEmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserEmailAlreadyExistsException(UserEmailAlreadyExistsException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+    @ExceptionHandler(UserNameAlreadyExistsException.class)
+        public ResponseEntity<String> handleUserNameAlreadyExistsException(UserNameAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
 }

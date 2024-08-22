@@ -10,7 +10,10 @@ import com.example.demo.services.exceptions.UserExceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,7 +39,7 @@ public class UserServiceImpl implements UserService {
             if(validateUserNotEmptyFieldsInBody(userDTO).contains("Email")){
                 throw new UserEmailAlreadyExistsException("Email Already Exists");
             }
-            if(validateUserNotEmptyFieldsInBody(userDTO).contains("Username")){
+            if(validateNotRepeatedFieldsInBody(userDTO).contains("Username")){
                 throw new UserNameAlreadyExistsException("Username Already Exists");
             }
         }
@@ -103,20 +106,20 @@ public class UserServiceImpl implements UserService {
         }
     }
     public String validateNotRepeatedFieldsInBody(UserDTO userDTO){
-         AtomicReference<String> msg = new AtomicReference<>("");
-        userRepository.findAll().stream().forEach((userEntity)->{
-                    if(userDTO.getUsername().equals(userEntity.getUsername())){
-                        msg.set("Username is repeated");
+         List<String> messages = userRepository.findAll().stream()
+                         .flatMap((userEntity) -> {
+                             List<String> errors = List.of();
+                             if(userDTO.getUsername().equals(userEntity.getUsername())){
+                                 errors = List.of("Username is repeated");
 
-                    }
-                    if(userDTO.getEmail().equals(userEntity.getEmail())){
-                        msg.set("Email is repeated");
+                             }
+                             if(userDTO.getEmail().equals(userEntity.getEmail())){
+                                 errors = List.of("Email is repeated");
 
-                    }
+                             }
+                             return errors.stream();
+                         }).collect(Collectors.toList());
+        return messages.isEmpty() ? "" : String.join(", ", messages);
 
-                }
-
-        );
-        return msg.get();
     }
 }
