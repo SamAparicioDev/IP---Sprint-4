@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dto.UserDTO;
 import com.example.demo.mappers.UserEntityAndUserDTO;
-import com.example.demo.models.Roles;
+import com.example.demo.models.UserRole;
 import com.example.demo.repositories.UserRepository;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class Application {
 	CommandLineRunner commandLineRunner(UserRepository userRepository){
 		return args -> {
 			UserEntityAndUserDTO userEntityAndUserDTO = new UserEntityAndUserDTO();
-			UserDTO userAdmin = new UserDTO("samuel", passwordEncoder.encode("sam12"),"aparici@gmail.com",Roles.ADMIN);
+			UserDTO userAdmin = new UserDTO("samuel", passwordEncoder.encode("sam12"),"aparici@gmail.com", UserRole.ADMIN);
 			UserDTO userDTO = new UserDTO("diana", passwordEncoder.encode("dian12"),"dian@gmail.com");
 			userRepository.save(userEntityAndUserDTO.userDTOToUserEntity(userDTO));
 			userRepository.save(userEntityAndUserDTO.userDTOToUserEntity(userAdmin));

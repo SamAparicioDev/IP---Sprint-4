@@ -1,9 +1,9 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.UserDTO;
+import com.example.demo.models.UserRole;
 import com.example.demo.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +37,11 @@ public class UserController {
 
         }
         userServiceImpl.updateUser(id,userDTO);
+        return ResponseEntity.ok(userServiceImpl.getUserById(id));
+    }
+    @PutMapping("/put/role/{id}")
+    public ResponseEntity<UserDTO> convertToAdmin(@PathVariable Long id, @RequestParam UserRole userRole){
+        userServiceImpl.changeRol(id,userRole);
         return ResponseEntity.ok(userServiceImpl.getUserById(id));
     }
 

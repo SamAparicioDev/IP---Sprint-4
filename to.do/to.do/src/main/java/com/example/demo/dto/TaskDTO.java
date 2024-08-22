@@ -13,7 +13,7 @@ public class TaskDTO {
     @JsonProperty
     private String description;
     @JsonProperty
-    private TaskStatusEnum status;
+    private TaskStatusEnum status = TaskStatusEnum.PENDING;
     @JsonProperty
     private UserEntity user_id;
 

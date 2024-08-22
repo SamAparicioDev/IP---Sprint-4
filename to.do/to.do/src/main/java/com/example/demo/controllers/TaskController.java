@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.TaskDTO;
+import com.example.demo.enums.TaskStatusEnum;
 import com.example.demo.models.TaskEntity;
 import com.example.demo.services.impl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,12 @@ public class TaskController {
     @PutMapping("/put/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable("id") Long id, @RequestBody TaskDTO task) {
         taskServiceImpl.updateTask(id,task);
+        return ResponseEntity.ok(taskServiceImpl.getTaskById(id));
+    }
+
+    @PutMapping("/put/status/{id}")
+    public ResponseEntity<TaskDTO> updateTaskStatus(@PathVariable("id") Long id, @RequestParam TaskStatusEnum status) {
+        taskServiceImpl.changeStatus(id,status);
         return ResponseEntity.ok(taskServiceImpl.getTaskById(id));
     }
 }

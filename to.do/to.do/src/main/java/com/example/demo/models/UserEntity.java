@@ -1,7 +1,6 @@
 package com.example.demo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -15,8 +14,9 @@ public class UserEntity {
     @Column(unique = true)
     private String username;
     private String password;
+    @Column(unique = true)
     private String email;
-    private Roles role = Roles.USER;
+    private UserRole role = UserRole.USER;
     @JsonIgnore
     @OneToMany(mappedBy = "user_id" , fetch = FetchType.LAZY)
     private Set<TaskEntity> task = new HashSet<>();
@@ -72,11 +72,11 @@ public class UserEntity {
         this.task = task;
     }
 
-    public Roles getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Roles role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

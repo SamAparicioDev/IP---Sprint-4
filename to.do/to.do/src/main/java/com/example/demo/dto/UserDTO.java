@@ -1,16 +1,7 @@
 package com.example.demo.dto;
 
-import com.example.demo.models.Roles;
-import com.example.demo.models.TaskEntity;
-import com.example.demo.models.UserEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.example.demo.models.UserRole;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,18 +22,18 @@ public class UserDTO {
     private Set<TaskDTO> task = new HashSet<>();
 
     @JsonProperty
-    private Roles roles = Roles.USER;
+    private UserRole userRole = UserRole.USER;
 
     public UserDTO(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
     }
-    public UserDTO(String username, String password, String email,Roles roles) {
+    public UserDTO(String username, String password, String email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.roles = roles;
+        this.userRole = userRole;
     }
 
     public Long getId(){
@@ -84,12 +75,12 @@ public class UserDTO {
         this.task = task;
     }
 
-    public Roles getRoles() {
-        return roles;
+    public UserRole getRoles() {
+        return userRole;
     }
 
-    public void setRoles(Roles roles) {
-        this.roles = roles;
+    public void setRoles(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     @Override

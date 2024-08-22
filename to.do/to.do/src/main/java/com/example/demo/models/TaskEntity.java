@@ -12,7 +12,7 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
-    private TaskStatusEnum status;
+    private TaskStatusEnum status = TaskStatusEnum.PENDING;
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user_id;
 
