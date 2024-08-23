@@ -8,6 +8,7 @@ import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
 import com.example.demo.services.exceptions.UserExceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
     private UserEntityAndUserDTO userEntityAndUserDTO = new UserEntityAndUserDTO();
 
 
@@ -32,17 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        if(!validateUserNotEmptyFieldsInBody(userDTO).equals("")){
-            throw new IncompleteUserException(validateUserNotEmptyFieldsInBody(userDTO));
-        }
-        if(!validateNotRepeatedFieldsInBody(userDTO).equals("")){
-            if(validateUserNotEmptyFieldsInBody(userDTO).contains("Email")){
-                throw new UserEmailAlreadyExistsException("Email Already Exists");
-            }
-            if(validateNotRepeatedFieldsInBody(userDTO).contains("Username")){
-                throw new UserNameAlreadyExistsException("Username Already Exists");
-            }
-        }
+        validateUserNotEmptyFieldsInBody(userDTO);
+        validateNotRepeatedFieldsInBody(userDTO);
         UserEntity userEntity = userRepository.save(userEntityAndUserDTO.userDTOToUserEntity(userDTO));
         return userEntityAndUserDTO.userEntityToUserDTO(userEntity);
     }
@@ -55,17 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
-            if(!validateUserNotEmptyFieldsInBody(userDTO).equalsIgnoreCase("")){
-                throw new IncompleteUserException(validateUserNotEmptyFieldsInBody(userDTO));
-            }
-            if(!validateNotRepeatedFieldsInBody(userDTO).equals("")){
-                if(validateUserNotEmptyFieldsInBody(userDTO).contains("Email")){
-                    throw new UserEmailAlreadyExistsException("Email Already Exists");
-                }
-                if(validateUserNotEmptyFieldsInBody(userDTO).contains("Username")){
-                    throw new UserNameAlreadyExistsException("Username Already Exists");
-                }
-            }
+            validateUserNotEmptyFieldsInBody(userDTO);
+             validateNotRepeatedFieldsInBody(userDTO);
             UserEntity user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
             user.setEmail(userDTO.getEmail());
             user.setPassword(userDTO.getPassword());
@@ -78,10 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO changeRol(Long id, UserRole role){
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
-        if(userEntity.getRole() == null){
-            throw new UserRoleIsEmpty("Role field is empty");
-        }
+        UserEntity userEntity = validateRolIsNotEmpty(id);
         if(userEntity.getRole().equals(role)){
             return userEntityAndUserDTO.userEntityToUserDTO(userEntity);
         }
@@ -90,36 +71,33 @@ public class UserServiceImpl implements UserService {
             return userEntityAndUserDTO.userEntityToUserDTO(userEntity);
 
     }
-
-    public String validateUserNotEmptyFieldsInBody(UserDTO userDTO){
+    public UserEntity validateRolIsNotEmpty(Long id){
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
+        if(userEntity.getRole() == null){
+            throw new UserRoleIsEmpty("Role field is empty");
+        }
+        return userEntity;
+    }
+    public void validateUserNotEmptyFieldsInBody(UserDTO userDTO){
         if(userDTO.getPassword() == null || userDTO.getPassword().isEmpty()){
-            return "Password field is empty";
+            throw new IncompleteUserException("Password field is empty");
         }
         if(userDTO.getUsername() == null || userDTO.getUsername().isEmpty()){
-            return "Username field is empty";
+            throw new IncompleteUserException("Username field is empty");
         }
         if(userDTO.getEmail() == null || userDTO.getEmail().isEmpty()){
-            return "Email field is empty";
-        }
-        else{
-            return "";
+            throw new IncompleteUserException("Email field is empty");
         }
     }
-    public String validateNotRepeatedFieldsInBody(UserDTO userDTO){
-         List<String> messages = userRepository.findAll().stream()
-                         .flatMap((userEntity) -> {
-                             List<String> errors = List.of();
-                             if(userDTO.getUsername().equals(userEntity.getUsername())){
-                                 errors = List.of("Username is repeated");
-
-                             }
-                             if(userDTO.getEmail().equals(userEntity.getEmail())){
-                                 errors = List.of("Email is repeated");
-
-                             }
-                             return errors.stream();
-                         }).collect(Collectors.toList());
-        return messages.isEmpty() ? "" : String.join(", ", messages);
-
+    public void validateNotRepeatedFieldsInBody(UserDTO userDTO){
+         List<UserEntity> messages = userRepository.findAll();
+         for(UserEntity userEntity : messages){
+             if(userEntity.getEmail().equals(userDTO.getEmail())){
+                throw  new UserEmailAlreadyExistsException("Email already exists");
+             }
+             if(userEntity.getUsername().equals(userDTO.getUsername())){
+                 throw  new UserNameAlreadyExistsException("Username already exists");
+             }
+         }
     }
 }

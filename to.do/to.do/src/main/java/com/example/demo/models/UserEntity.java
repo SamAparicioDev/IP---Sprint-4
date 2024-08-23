@@ -18,13 +18,20 @@ public class UserEntity {
     private String email;
     private UserRole role = UserRole.USER;
     @JsonIgnore
-    @OneToMany(mappedBy = "user_id" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user_id" , fetch = FetchType.EAGER)
     private Set<TaskEntity> task = new HashSet<>();
 
     public UserEntity(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+    public UserEntity(Long id,String username, String password, String email, UserRole role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
     }
     public UserEntity(Long id) {
         this.id = id;
